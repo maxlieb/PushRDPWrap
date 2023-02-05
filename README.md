@@ -33,7 +33,7 @@ I had a relatively simple batch file for this, but there were a number of proble
 
 This script is my attempt to resolve this.
 
-It will download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate, copy those to the remote computer and install it.
+It will locally download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate, copy those to the remote computer and install it.
 
 It will wait for user input after patching RDP, so you can have your session,
 and when done return to the command prompt, and press ENTER to uninstall it.
