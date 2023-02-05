@@ -7,6 +7,7 @@ USAGE: MulRDP ComputerName
   * Script will enable PSRemoting on the remote computer automatically
 * Obviously admin rights on the remote machine and network access to it are required.
 * Local machine must be able to download files from github.
+* It does NOT create an RDP session, do this manually like you normally would using whatever app and device you like.
 
 This script utilizes [stascorp/rdpwrap](https://github.com/stascorp/rdpwrap) and it's auto update script from [asmtron/rdpwrap](https://github.com/stascorp/rdpwrap/pull/1160).
 
