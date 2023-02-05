@@ -17,6 +17,7 @@ This script was created to resolve a problem I had for the following use case:
 
 Sometimes I would need to RDP into a random computer in our domain to troubleshoot something.
 The tools allowed me to do so without interrupting the user.
+
 I also usually want to uninstall it after I'm done.
 
 The problem was that I needed a reliable way to push this to a remote machine,
