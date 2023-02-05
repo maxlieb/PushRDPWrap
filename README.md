@@ -8,7 +8,8 @@ USAGE: MulRDP ComputerName
 * Obviously admin rights on the remote machine and network access to it are required.
 * Local machine must be able to download files from github.
 
-This script utilizes stascorp/rdpwrap and it's auto update script from asmtron/rdpwrap
+This script utilizes stascorp/rdpwrap and it's auto update script from asmtron/rdpwrap.
+
 The above tool allows concurrent RDP sessions, visit those repo pages for more details.
 
 This script was created to resolve a problem I had for the following use case:
