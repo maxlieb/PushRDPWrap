@@ -1,8 +1,8 @@
 # PushRDPWrap
 Remote RDPWrap Installer - RDP to a remote computer without kicking out the current user.
 
-USAGE: MulRDP <computername>
-* <computername> Needs to be a hostname, not an IP address (PSRemoting limitation)
+USAGE: MulRDP ComputerName
+* ComputerName Needs to be a hostname, not an IP address (PSRemoting limitation)
   * In the future might add psexec fallback.
   * Script will enable PSRemoting on the remote computer automatically
 * Obviously admin rights on the remote machine and network access to it are required.
