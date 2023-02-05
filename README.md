@@ -8,7 +8,7 @@ USAGE: MulRDP ComputerName
 * Obviously admin rights on the remote machine and network access to it are required.
 * Local machine must be able to download files from github.
 
-This script utilizes stascorp/rdpwrap and it's auto update script from asmtron/rdpwrap.
+This script utilizes [stascorp/rdpwrap](https://github.com/stascorp/rdpwrap) and it's auto update script from [asmtron/rdpwrap](https://github.com/stascorp/rdpwrap/pull/1160).
 
 The above tool allows concurrent RDP sessions, visit those repo pages for more details.
 
@@ -33,4 +33,5 @@ This script is my attempt to resolve this.
 
 It will download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate, copy those to the remote computer and install it.
 
-It will wait for user input after patching RDP so you can have your session, and when done return to the command prompt, and press ENTER to uninstall it.
+It will wait for user input after patching RDP, so you can have your session,
+and when done return to the command prompt, and press ENTER to uninstall it.
