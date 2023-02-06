@@ -1,17 +1,17 @@
 # PushRDPWrap
-Remote RDPWrap Installer - RDP to a remote computer without kicking out the current user.
+Remote RDPWrap Installer - Connect using RDP to workstations without kicking out the current user.
 
 USAGE: MulRDP ComputerName
 * ComputerName Needs to be a hostname, not an IP address (PSRemoting limitation)
   * In the future might add psexec fallback.
-  * Script will enable PSRemoting on the remote computer automatically
-* Obviously admin rights on the remote machine and network access to it are required.
+  * Script will enable PSRemoting on the remote computer automatically.
+* Obviously admin rights on the remote machine, and network access to it, are required.
 * Local machine must be able to download files from github.
-* It does NOT create an RDP session, do this manually like you normally would using whatever app and device you like.
+* It does NOT create an RDP session, do this manually like you normally would, using whatever app and device you like.
 
 This script utilizes [stascorp/rdpwrap](https://github.com/stascorp/rdpwrap) and it's auto update script from [asmtron/rdpwrap](https://github.com/stascorp/rdpwrap/pull/1160).
 
-The above tool allows concurrent RDP sessions, visit those repo pages for more details.
+The above tools allow concurrent RDP sessions, visit the links for more details.
 
 This script was created to resolve a problem I had for the following use case:
 
@@ -29,11 +29,11 @@ I had a relatively simple batch file for this, but there were a number of proble
 
 1. Sometimes one of the security clients installed on our computers would delete rdpwinst.exe.
 2. Autoupdate.bat is occasionally updated with new URLs for .ini files so I want to grab the latest file.
-3. At some point downloading files from github was blocked for most users so when running autoupdate.bat remotely, it failed to download files.
+3. At some point downloading files from github was blocked for most users, so when running autoupdate.bat remotely, it failed to download files.
 
 This script is my attempt to resolve this.
 
-It will locally download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate, copy those to the remote computer and install it.
+It will locally download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate.bat, copy those to the remote computer and install it.
 
 It will wait for user input after patching RDP, so you can have your session,
 and when done return to the command prompt, and press ENTER to uninstall it.
