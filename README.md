@@ -20,9 +20,9 @@ Invoke-Expression (Invoke-WebRequest https://raw.githubusercontent.com/fabianosr
 If github is filtered just copy the script, once you get it onto the disk it works offline.
 
 Other ideas I used it with:
-Run it using SCCM's 'run script' feature - that allows me to execute it almost in realtime and even of the computer is not on LAN.
-Once done I can RDP into it.
-if Off LAN I can do it using some RMM solution, MeshCentral for example, which can also technically run the script in the first place.
+Run it using SCCM's 'run script' feature - that allows me to execute it almost in realtime, and even if the computer is not on LAN (Working from home).
+Once done I can RDP away into it,
+If Off LAN I can do it using some RMM solution, MeshCentral for example, which can also technically run the script in the first place.
 
 
 # PushRDPWrap
