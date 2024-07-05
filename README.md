@@ -1,13 +1,13 @@
 # Edit
-This was a fun project, but has a couple of problems:
-* What if the computer is to reachable by LAN?
+This was a fun project, but it has a couple of problems:
+* What if the computer is not reachable by LAN?
 * It still has some issues with security agents (Cortex XDR for example)...
 * Complicated and therefore unreliable.
 
 Found a much simpler solution:
 https://github.com/fabianosrc/TermsrvPatcher
 
-I't a universal tersrv.dll patcher, that:
+I't a universal termsrv.dll patcher, that:
 * Consists of a single, short, and simple to understand PowerShell script.
 * Has no external dependencies.
 * Doesn't need updating (though still needs to be rerun after windows updates)
