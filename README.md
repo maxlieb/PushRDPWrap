@@ -1,3 +1,30 @@
+# Edit
+This was a fun project, but has a couple of problems:
+* What if the computer is to reachable by LAN?
+* It still has some issues with security agents (Cortex XDR for example)...
+* Complicated and therefore unreliable.
+
+Found a much simpler solution:
+https://github.com/fabianosrc/TermsrvPatcher
+
+I't a universal tersrv.dll patcher, that:
+* Consists of a single, short, and simple to understand PowerShell script.
+* Has no external dependencies.
+* Doesn't need updating (though still needs to be rerun after windows updates)
+* Doesn't seem to cause troubles with security agents. (Cortex XDR & Win Defender at least)
+
+Asuming github is not filtered,
+You can even download and run the patcher localy or remotely (add -computername parameter) using this PowerShell one-liner
+Invoke-Expression (Invoke-WebRequest https://raw.githubusercontent.com/fabianosrc/TermsrvPatcher/main/TermsrvPatcher.ps1 -UseBasicParsing).content
+
+If github is filtered just copy the script, once you get it onto the disk it works offline.
+
+Other ideas I used it with:
+Run it using SCCM's 'run script' feature - that allows me to execute it almost in realtime and even of the computer is not on LAN.
+Once done I can RDP into it.
+if Off LAN I can do it using some RMM solution, MeshCentral for example, which can also technically run the script in the first place.
+
+
 # PushRDPWrap
 Remote RDPWrap Installer - Connect using RDP to workstations without kicking out the current user.
 
