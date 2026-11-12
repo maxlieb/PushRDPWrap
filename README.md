@@ -1,66 +1,74 @@
-# Edit
-This was a fun project, but it has a couple of problems:
-* What if the computer is not reachable by LAN?
-* It still has some issues with security agents (Cortex XDR for example)...
-* Complicated and therefore unreliable.
+# TemservPatcher
 
-Found a much simpler solution:
-https://github.com/fabianosrc/TermsrvPatcher
+A single-file PowerShell patcher for `termsrv.dll` that enables **concurrent RDP
+sessions** on Windows — connect to a workstation or server over RDP without
+kicking out the user who is already logged on.
 
-I't a universal termsrv.dll patcher, that:
-* Consists of a single, short, and simple to understand PowerShell script.
-* Has no external dependencies.
-* Doesn't need updating (though still needs to be rerun after windows updates)
-* Doesn't seem to cause troubles with security agents. (Cortex XDR & Win Defender at least)
+This repo started life as `PushRDPWrap`, an installer around
+[stascorp/rdpwrap](https://github.com/stascorp/rdpwrap). That approach was
+complicated, needed an up-to-date `rdpwrap.ini` per Windows build, and kept
+getting its files deleted by security agents (Cortex XDR, Defender). The
+`termsrv.dll` patch is a much simpler, dependency-free replacement, based on
+[fabianosrc/TermsrvPatcher](https://github.com/fabianosrc/TermsrvPatcher).
 
-Asuming github is not filtered,
-You can even download and run the patcher localy or remotely (add -computername parameter) using this PowerShell one-liner
-Invoke-Expression (Invoke-WebRequest https://raw.githubusercontent.com/fabianosrc/TermsrvPatcher/main/TermsrvPatcher.ps1 -UseBasicParsing).content
+## What it does
 
-If github is filtered just copy the script, once you get it onto the disk it works offline.
+- Detects the Windows version/build and selects the right byte pattern.
+- Takes ownership of `termsrv.dll`, patches it, and swaps it in using a
+  **kill-and-move** strategy that works even while the file is in use:
+  the locked DLL is moved aside to a timestamped `.bak` and the patched copy
+  is put in its place.
+- Restores the original ACL and restarts `TermService` / `UmRdpService`.
+- Self-elevates (re-launches as Administrator if needed).
+- Idempotent: if the DLL already contains the patched bytes, it does nothing.
 
-Other ideas I used it with:
-Run it using SCCM's 'run script' feature - that allows me to execute it almost in realtime, and even if the computer is not on LAN (Working from home).
-Once done I can RDP away into it,
-If Off LAN I can do it using some RMM solution, MeshCentral for example, which can also technically run the script in the first place.
+## Supported versions
 
+| OS | Handling |
+|----|----------|
+| Windows 10 | single known pattern |
+| Windows 11 (22H2 / 23H2 / 24H2 / 25H2 / **26H2**) | newest-first try-each |
+| Windows Server 2016 / 2019 | single known pattern |
+| Windows Server 2022 | single known pattern |
+| Windows Server 2025 (build ≥ 26100) | newest-first try-each |
 
-# PushRDPWrap
-Remote RDPWrap Installer - Connect using RDP to workstations without kicking out the current user.
+For Windows 11 and Server 2025+, the script tries each known byte pattern in
+order (26H2/25H2 → 24H2 → 22H2/23H2) until one matches, so new feature-update
+builds keep working without hard-coding exact `DisplayVersion` strings.
 
-USAGE: MulRDP ComputerName
-* ComputerName Needs to be a hostname, not an IP address (PSRemoting limitation)
-  * In the future might add psexec fallback.
-  * Script will enable PSRemoting on the remote computer automatically.
-* Obviously admin rights on the remote machine, and network access to it, are required.
-* Local machine must be able to download files from github.
-* It does NOT create an RDP session, do this manually like you normally would, using whatever app and device you like.
+## Usage
 
-This script utilizes [stascorp/rdpwrap](https://github.com/stascorp/rdpwrap) and it's auto update script from [asmtron/rdpwrap](https://github.com/stascorp/rdpwrap/pull/1160).
+Run it **as Administrator** on the target machine (it will self-elevate if you
+don't):
 
-The above tool allow concurrent RDP sessions, visit the links for more details.
+```powershell
+powershell -ExecutionPolicy Bypass -File .\TemservPatcher.ps1
+```
 
-This script was created to resolve a problem I had for the following use case:
+It runs locally, with no arguments. To apply it remotely, push and run it with
+whatever tool you already use — for example:
 
-Sometimes I would need to RDP into a random computer in our domain to troubleshoot something.
-The tool allowed me to do so without interrupting the user.
+- **SCCM / ConfigMgr "Run Script"** — near real-time, and works even when the
+  machine is off-LAN.
+- **An RMM agent** (e.g. MeshCentral) — can both deliver and run the script.
+- **PsExec** — `psexec \\HOST -s -c TemservPatcher.ps1`.
 
-I also usually want to uninstall it after I'm done.
+Then RDP in as you normally would, with your own client — the script does not
+open an RDP session itself.
 
-The problem was that I needed a reliable way to push this to a remote machine,
-Including the tricky part of grabing an updated rdpwrap.ini file for the installed windows version that's required for this to work.
+## Notes
 
-I used to copy the files from a local folder on my pc to the remote computer, and use psexec to launch autoupdate.bat
+- **Re-run after Windows updates.** A cumulative/feature update replaces
+  `termsrv.dll` and reverts the patch; just run the script again.
+- A timestamped backup (`termsrv.dll.<timestamp>.bak`) is left next to the
+  original in `System32` each time a patch is applied.
+- Enabling concurrent RDP sessions may have **licensing implications** in
+  production/server environments — make sure it's appropriate for your use case.
+- Patching a core system DLL is inherently invasive. Test on a representative
+  machine for each new Windows build before relying on it in the field.
 
-I had a relatively simple batch file for this, but there were a number of problems:
+## Files
 
-1. Sometimes one of the security clients would delete rdpwinst.exe.
-2. Autoupdate.bat is occasionally updated with new URLs for .ini files so I want to grab the latest file.
-3. At some point downloading files from github was blocked for most users, so when running autoupdate.bat remotely, it failed to download files.
-
-This script is my attempt to resolve this.
-
-It will locally download rdpwrap, autoupdate, and all the .ini files from the URLs in autoupdate.bat, copy those to the remote computer and install it.
-
-It will wait for user input after patching RDP, so you can have your session,
-and when done return to the command prompt, and press ENTER to uninstall it.
+| File | Purpose |
+|------|---------|
+| `TemservPatcher.ps1` | The patcher. |
